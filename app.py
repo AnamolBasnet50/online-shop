@@ -13,18 +13,42 @@ ADMIN_PASSWORD_HASH = hashlib.sha256("admin123".encode()).hexdigest()
 def init_db():
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
+    
+    # Create enrollments table
     cursor.execute('''CREATE TABLE IF NOT EXISTS enrollments (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT,
                         email TEXT,
                         contact TEXT,
                         address TEXT)''')
+    
+    # Create products table
+    cursor.execute('''CREATE TABLE IF NOT EXISTS products (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        title TEXT,
+                        description TEXT,
+                        price REAL)''')
+    
+    # Create courses table
+    cursor.execute('''CREATE TABLE IF NOT EXISTS courses (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        title TEXT,
+                        description TEXT,
+                        price REAL)''')
+    
     conn.commit()
     conn.close()
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM products")
+    products = cursor.fetchall()
+    cursor.execute("SELECT * FROM courses")
+    courses = cursor.fetchall()
+    conn.close()
+    return render_template('index.html', products=products, courses=courses)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -56,8 +80,12 @@ def admin():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM enrollments")
     students = cursor.fetchall()
+    cursor.execute("SELECT * FROM products")
+    products = cursor.fetchall()
+    cursor.execute("SELECT * FROM courses")
+    courses = cursor.fetchall()
     conn.close()
-    return render_template('admin_dashboard.html', students=students)
+    return render_template('admin_dashboard.html', students=students, products=products, courses=courses)
 
 @app.route('/delete/<int:id>')
 def delete_student(id):
@@ -70,6 +98,36 @@ def delete_student(id):
     conn.commit()
     conn.close()
     flash("Enrollment deleted successfully!", "success")
+    return redirect('/admin')
+
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    if 'admin' not in session:
+        return redirect('/login')
+    title = request.form['title']
+    description = request.form['description']
+    price = request.form['price']
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO products (title, description, price) VALUES (?, ?, ?)", (title, description, price))
+    conn.commit()
+    conn.close()
+    flash("Product added successfully!", "success")
+    return redirect('/admin')
+
+@app.route('/add_course', methods=['POST'])
+def add_course():
+    if 'admin' not in session:
+        return redirect('/login')
+    title = request.form['title']
+    description = request.form['description']
+    price = request.form['price']
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO courses (title, description, price) VALUES (?, ?, ?)", (title, description, price))
+    conn.commit()
+    conn.close()
+    flash("Course added successfully!", "success")
     return redirect('/admin')
 
 @app.route('/enroll', methods=['POST'])

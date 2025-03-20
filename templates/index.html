@@ -12,16 +12,30 @@
     </header>
     
     <section id="products">
-        <h2>Products</h2>
-        <div class="product-list">
-            <!-- Products will be listed here dynamically -->
+        <h2>Our Products</h2>
+        <div class="grid-container">
+            {% for product in products %}
+            <div class="card">
+                <h3>{{ product[1] }}</h3>
+                <p>{{ product[2] }}</p>
+                <p><strong>Price:</strong> ${{ product[3] }}</p>
+                <button>Buy Now</button>
+            </div>
+            {% endfor %}
         </div>
     </section>
     
     <section id="courses">
-        <h2>Courses</h2>
-        <div class="course-list">
-            <!-- Courses will be listed here dynamically -->
+        <h2>Our Courses</h2>
+        <div class="grid-container">
+            {% for course in courses %}
+            <div class="card">
+                <h3>{{ course[1] }}</h3>
+                <p>{{ course[2] }}</p>
+                <p><strong>Price:</strong> ${{ course[3] }}</p>
+                <button>Enroll Now</button>
+            </div>
+            {% endfor %}
         </div>
     </section>
     
