@@ -87,19 +87,6 @@ def admin():
     conn.close()
     return render_template('admin_dashboard.html', students=students, products=products, courses=courses)
 
-@app.route('/delete/<int:id>')
-def delete_student(id):
-    if 'admin' not in session:
-        flash("Unauthorized action! Please log in.", "error")
-        return redirect('/login')
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM enrollments WHERE id = ?", (id,))
-    conn.commit()
-    conn.close()
-    flash("Enrollment deleted successfully!", "success")
-    return redirect('/admin')
-
 @app.route('/add_product', methods=['POST'])
 def add_product():
     if 'admin' not in session:

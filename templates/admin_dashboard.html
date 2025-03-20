@@ -9,99 +9,114 @@
 <body>
     <header>
         <h1>Admin Dashboard</h1>
-        <a href="/logout" class="logout-btn">Logout</a>
+        <nav>
+            <ul>
+                <li><a href="/admin">Dashboard</a></li>
+                <li><a href="#manage-products">Manage Products</a></li>
+                <li><a href="#manage-courses">Manage Courses</a></li>
+                <li><a href="/logout" class="logout-btn">Logout</a></li>
+            </ul>
+        </nav>
     </header>
     
-    <section>
-        <h2>Enrollments</h2>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+    <main class="dashboard-container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="#enrollments">Enrollments</a></li>
+                <li><a href="#manage-products">Products</a></li>
+                <li><a href="#manage-courses">Courses</a></li>
+            </ul>
+        </aside>
         
-        <table border="1">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Contact</th>
-                <th>Address</th>
-                <th>Action</th>
-            </tr>
-            {% for student in students %}
-            <tr>
-                <td>{{ student[0] }}</td>
-                <td>{{ student[1] }}</td>
-                <td>{{ student[2] }}</td>
-                <td>{{ student[3] }}</td>
-                <td>{{ student[4] }}</td>
-                <td>
-                    <a href="/delete/{{ student[0] }}" class="delete-btn">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
-    
-    <section>
-        <h2>Manage Products</h2>
-        <form action="/add_product" method="POST">
-            <input type="text" name="title" placeholder="Product Title" required>
-            <textarea name="description" placeholder="Product Description" required></textarea>
-            <input type="number" step="0.01" name="price" placeholder="Price" required>
-            <button type="submit">Add Product</button>
-        </form>
-        <table border="1">
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Action</th>
-            </tr>
-            {% for product in products %}
-            <tr>
-                <td>{{ product[0] }}</td>
-                <td>{{ product[1] }}</td>
-                <td>{{ product[2] }}</td>
-                <td>${{ product[3] }}</td>
-                <td><a href="/delete_product/{{ product[0] }}" class="delete-btn">Delete</a></td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
-    
-    <section>
-        <h2>Manage Courses</h2>
-        <form action="/add_course" method="POST">
-            <input type="text" name="title" placeholder="Course Title" required>
-            <textarea name="description" placeholder="Course Description" required></textarea>
-            <input type="number" step="0.01" name="price" placeholder="Price" required>
-            <button type="submit">Add Course</button>
-        </form>
-        <table border="1">
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Action</th>
-            </tr>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course[0] }}</td>
-                <td>{{ course[1] }}</td>
-                <td>{{ course[2] }}</td>
-                <td>${{ course[3] }}</td>
-                <td><a href="/delete_course/{{ course[0] }}" class="delete-btn">Delete</a></td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
+        <section class="content">
+            <section id="enrollments">
+                <h2>Enrollments</h2>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student[0] }}</td>
+                        <td>{{ student[1] }}</td>
+                        <td>{{ student[2] }}</td>
+                        <td>{{ student[3] }}</td>
+                        <td>{{ student[4] }}</td>
+                        <td>
+                            <a href="/delete/{{ student[0] }}" class="delete-btn">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </section>
+            
+            <section id="manage-products">
+                <h2>Manage Products</h2>
+                <form action="/add_product" method="POST">
+                    <input type="text" name="title" placeholder="Product Title" required>
+                    <textarea name="description" placeholder="Product Description" required></textarea>
+                    <input type="number" step="0.01" name="price" placeholder="Price" required>
+                    <button type="submit">Add Product</button>
+                </form>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product[0] }}</td>
+                        <td>{{ product[1] }}</td>
+                        <td>{{ product[2] }}</td>
+                        <td>${{ product[3] }}</td>
+                        <td>
+                            <a href="/edit_product/{{ product[0] }}" class="edit-btn">Edit</a>
+                            <a href="/delete_product/{{ product[0] }}" class="delete-btn">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </section>
+            
+            <section id="manage-courses">
+                <h2>Manage Courses</h2>
+                <form action="/add_course" method="POST">
+                    <input type="text" name="title" placeholder="Course Title" required>
+                    <textarea name="description" placeholder="Course Description" required></textarea>
+                    <input type="number" step="0.01" name="price" placeholder="Price" required>
+                    <button type="submit">Add Course</button>
+                </form>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for course in courses %}
+                    <tr>
+                        <td>{{ course[0] }}</td>
+                        <td>{{ course[1] }}</td>
+                        <td>{{ course[2] }}</td>
+                        <td>${{ course[3] }}</td>
+                        <td>
+                            <a href="/edit_course/{{ course[0] }}" class="edit-btn">Edit</a>
+                            <a href="/delete_course/{{ course[0] }}" class="delete-btn">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </section>
+        </section>
+    </main>
 </body>
 </html>
